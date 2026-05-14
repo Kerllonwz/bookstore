@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.contrib.auth.models import User
 from rest_framework.test import APIClient
 from rest_framework import status
 from category.models import Category
@@ -10,13 +11,20 @@ class ProductViewSetTest(TestCase):
         self.client = APIClient()
         self.list_url = '/api/products/'
         self.category = Category.objects.create(name='Fiction')
+        self.user = User.objects.create_user(username='tester', password='password123')
 
     def test_create_product(self):
+        self.client.force_authenticate(user=self.user)
         data = {'name': 'Dune', 'price': '29.90', 'category': self.category.id}
         response = self.client.post(self.list_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Product.objects.count(), 1)
         self.assertEqual(response.data['name'], 'Dune')
+
+    def test_create_product_requires_authentication(self):
+        data = {'name': 'Dune', 'price': '29.90', 'category': self.category.id}
+        response = self.client.post(self.list_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_list_products(self):
         Product.objects.create(name='Dune', price='29.90', category=self.category)

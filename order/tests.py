@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.contrib.auth.models import User
 from rest_framework.test import APIClient
 from rest_framework import status
 from category.models import Category
@@ -12,13 +13,20 @@ class OrderViewSetTest(TestCase):
         self.list_url = '/api/orders/'
         category = Category.objects.create(name='Fiction')
         self.product = Product.objects.create(name='Dune', price='29.90', category=category)
+        self.user = User.objects.create_user(username='tester', password='password123')
 
     def test_create_order(self):
+        self.client.force_authenticate(user=self.user)
         data = {'product': self.product.id, 'quantity': 3}
         response = self.client.post(self.list_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Order.objects.count(), 1)
         self.assertEqual(response.data['quantity'], 3)
+
+    def test_create_order_requires_authentication(self):
+        data = {'product': self.product.id, 'quantity': 3}
+        response = self.client.post(self.list_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_list_orders(self):
         Order.objects.create(product=self.product, quantity=1)
