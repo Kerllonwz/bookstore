@@ -25,4 +25,5 @@ class OrderViewSetTest(TestCase):
         Order.objects.create(product=self.product, quantity=2)
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(response.data['count'], 2)
+        self.assertEqual(len(response.data['results']), 2)
