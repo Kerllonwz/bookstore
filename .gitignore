@@ -1,11 +1,15 @@
 # Python
 __pycache__/
+pycache/
 *.py[cod]
+*.pyc
 *.pyo
 *.pyd
 .Python
 
 # Django
+.env
+env.dev
 *.log
 db.sqlite3
 media/
