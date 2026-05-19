@@ -11,6 +11,7 @@ services:
     env_file:
       - ./env.dev
     networks:
+      - frontend
       - backend
     depends_on:
       - db
@@ -27,6 +28,8 @@ services:
       - backend
 
 networks:
+  frontend:
+    driver: bridge
   backend:
     driver: bridge
 
