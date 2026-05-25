@@ -9,7 +9,6 @@ pycache/
 
 # Django
 .env
-env.dev
 *.log
 db.sqlite3
 media/
