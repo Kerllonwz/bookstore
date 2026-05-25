@@ -17,3 +17,15 @@ logs:
 .PHONY: shell
 shell:
 	docker-compose exec web python manage.py shell
+
+.PHONY: network-ls
+network-ls:
+	docker network ls
+
+.PHONY: network-inspect-backend
+network-inspect-backend:
+	docker network inspect bookstore_backend
+
+.PHONY: network-inspect-frontend
+network-inspect-frontend:
+	docker network inspect bookstore_frontend
